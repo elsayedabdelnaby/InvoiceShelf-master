@@ -35,6 +35,8 @@ class Invoice extends Model implements HasMedia
 
     public const STATUS_COMPLETED = 'COMPLETED';
 
+    public const STATUS_ARCHIVED = 'ARCHIVED';
+
     public const STATUS_UNPAID = 'UNPAID';
 
     public const STATUS_PARTIALLY_PAID = 'PARTIALLY_PAID';
@@ -69,6 +71,7 @@ class Invoice extends Model implements HasMedia
             'discount' => 'float',
             'discount_val' => 'integer',
             'exchange_rate' => 'float',
+            'is_archived' => 'boolean',
         ];
     }
 
@@ -300,6 +303,11 @@ class Invoice extends Model implements HasMedia
     public function scopeWhereCustomer($query, $customer_id)
     {
         $query->where('invoices.customer_id', $customer_id);
+    }
+
+    public function scopeWhereArchived($query, $archived = true)
+    {
+        $query->where('invoices.is_archived', $archived);
     }
 
     public function scopePaginateData($query, $limit)

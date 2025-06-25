@@ -33,6 +33,7 @@ class InvoiceResource extends JsonResource
             'due_amount' => $this->due_amount,
             'sent' => $this->sent,
             'viewed' => $this->viewed,
+            'is_archived' => $this->is_archived,
             'unique_hash' => $this->unique_hash,
             'template_name' => $this->template_name,
             'customer_id' => $this->customer_id,

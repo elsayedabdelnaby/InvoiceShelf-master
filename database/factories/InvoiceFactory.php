@@ -73,6 +73,16 @@ class InvoiceFactory extends Factory
         });
     }
 
+    public function archived()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'status' => Invoice::STATUS_ARCHIVED,
+                'is_archived' => true,
+            ];
+        });
+    }
+
     /**
      * Define the model's default state.
      */
@@ -120,6 +130,7 @@ class InvoiceFactory extends Factory
             'base_tax' => $this->faker->randomDigitNotNull(),
             'base_due_amount' => $this->faker->randomDigitNotNull(),
             'currency_id' => Currency::find(1)->id,
+            'is_archived' => false,
         ];
     }
 }
