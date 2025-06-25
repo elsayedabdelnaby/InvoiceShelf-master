@@ -24,6 +24,19 @@
           </template>
         </BaseButton>
 
+        <BaseButton
+          v-show="invoiceStore.invoiceTotalCount"
+          variant="secondary"
+          class="ml-4"
+          :loading="isExporting"
+          @click="exportInvoicesCsv"
+        >
+          <template #left="slotProps">
+            <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
+          </template>
+          {{ $t('general.export_csv') }}
+        </BaseButton>
+
         <router-link
           v-if="userStore.hasAbilities(abilities.CREATE_INVOICE)"
           to="invoices/create"
@@ -292,6 +305,7 @@ const utils = inject('$utils')
 const table = ref(null)
 const tableKey = ref(0)
 const showFilters = ref(false)
+const isExporting = ref(false)
 
 const status = ref([
   {
@@ -565,6 +579,55 @@ function setActiveTab(val) {
     default:
       activeTab.value = t('general.all')
       break
+  }
+}
+
+async function exportInvoicesCsv() {
+  try {
+    isExporting.value = true
+    
+    // Build query parameters from current filters
+    const queryParams = new URLSearchParams()
+    
+    if (filters.customer_id) {
+      queryParams.append('customer_id', filters.customer_id)
+    }
+    if (filters.status) {
+      queryParams.append('status', filters.status)
+    }
+    if (filters.from_date) {
+      queryParams.append('from_date', filters.from_date)
+    }
+    if (filters.to_date) {
+      queryParams.append('to_date', filters.to_date)
+    }
+    if (filters.invoice_number) {
+      queryParams.append('invoice_number', filters.invoice_number)
+    }
+    
+    // Create the export URL
+    const exportUrl = `/api/v1/invoices/export/csv?${queryParams.toString()}`
+    
+    // Create a temporary link element to trigger the download
+    const link = document.createElement('a')
+    link.href = exportUrl
+    link.download = `invoices_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    notificationStore.showNotification({
+      type: 'success',
+      message: t('invoices.export_success'),
+    })
+  } catch (error) {
+    console.error('Export error:', error)
+    notificationStore.showNotification({
+      type: 'error',
+      message: t('invoices.export_error'),
+    })
+  } finally {
+    isExporting.value = false
   }
 }
 </script>

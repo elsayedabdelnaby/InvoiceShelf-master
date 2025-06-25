@@ -105,6 +105,7 @@
     "logged_out_successfully": "Logged out successfully",
     "mark_as_default": "Mark as default",
     "no_data_found": "No data found",
+    "export_csv": "Export CSV",
     "pagination": {
       "previous": "Previous",
       "next": "Next",
@@ -484,6 +485,8 @@
     "updated_message": "Invoice updated successfully",
     "deleted_message": "Invoice deleted successfully | Invoices deleted successfully",
     "marked_as_sent_message": "Invoice marked as sent successfully",
+    "export_success": "Invoices exported successfully",
+    "export_error": "Failed to export invoices",
     "something_went_wrong": "something went wrong",
     "invalid_due_amount_message": "Total Invoice amount cannot be less than total paid amount for this Invoice. Please update the invoice or delete the associated payments to continue.",
     "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices."

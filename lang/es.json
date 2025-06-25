@@ -102,6 +102,7 @@
     "logged_out_successfully": "Logeado Satisfactoriamente",
     "mark_as_default": "Marcar como predeterminado",
     "no_data_found": "No se encontraron datos",
+    "export_csv": "Exportar CSV",
     "pagination": {
       "previous": "Anterior",
       "next": "Siguiente",
@@ -468,6 +469,8 @@
     "updated_message": "Factura actualizada exitosamente",
     "deleted_message": "Factura eliminada con éxito | Facturas borradas exitosamente",
     "marked_as_sent_message": "Factura marcada como enviada con éxito",
+    "export_success": "Facturas exportadas exitosamente",
+    "export_error": "Error al exportar facturas",
     "something_went_wrong": "Algo fue mal",
     "invalid_due_amount_message": "El pago introducido es mayor que el importe total pendiente de esta factura. Por favor, verificalo y vuelve a intentarlo.",
     "mark_as_default_invoice_template_description": "Si se activa, esta plantilla se seleccionará automáticamente para nuevas facturas. "

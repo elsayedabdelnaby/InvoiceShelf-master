@@ -43,6 +43,7 @@ use App\Http\Controllers\V1\Admin\General\TimeFormatsController;
 use App\Http\Controllers\V1\Admin\General\TimezonesController;
 use App\Http\Controllers\V1\Admin\Invoice\ChangeInvoiceStatusController;
 use App\Http\Controllers\V1\Admin\Invoice\CloneInvoiceController;
+use App\Http\Controllers\V1\Admin\Invoice\ExportInvoicesCsvController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoiceTemplatesController;
 use App\Http\Controllers\V1\Admin\Invoice\SendInvoiceController;
@@ -261,6 +262,8 @@ Route::prefix('/v1')->group(function () {
 
             // Invoices
             // -------------------------------------------------
+
+            Route::get('/invoices/export/csv', ExportInvoicesCsvController::class);
 
             Route::get('/invoices/{invoice}/send/preview', SendInvoicePreviewController::class);
 
