@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Bouncer\Scopes\DefaultScope;
+use App\Models\Invoice;
+use App\Observers\InvoiceObserver;
 use App\Policies\CompanyPolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\DashboardPolicy;
@@ -52,6 +54,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register model observers
+        Invoice::observe(InvoiceObserver::class);
 
         if (InstallUtils::isDbCreated()) {
             $this->addMenus();
