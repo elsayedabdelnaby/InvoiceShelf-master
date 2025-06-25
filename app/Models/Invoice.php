@@ -745,4 +745,12 @@ class Invoice extends Model implements HasMedia
 
         return true;
     }
+
+    /**
+     * Get the paid audit logs for this invoice.
+     */
+    public function paidAuditLogs()
+    {
+        return $this->hasMany(InvoicePaidAuditLog::class);
+    }
 }
