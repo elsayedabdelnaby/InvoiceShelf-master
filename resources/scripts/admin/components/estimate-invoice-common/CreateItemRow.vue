@@ -21,18 +21,28 @@
                 >
                   <DragIcon />
                 </div>
-                <BaseItemSelect
-                  type="Invoice"
-                  :item="itemData"
-                  :invalid="v$.name.$error"
-                  :invalid-description="v$.description.$error"
-                  :taxes="itemData.taxes"
-                  :index="index"
-                  :store-prop="storeProp"
-                  :store="store"
-                  @search="searchVal"
-                  @select="onSelectItem"
-                />
+                <div class="flex-1">
+                  <BaseItemSelect
+                    type="Invoice"
+                    :item="itemData"
+                    :invalid="v$.name.$error"
+                    :invalid-description="v$.description.$error"
+                    :taxes="itemData.taxes"
+                    :index="index"
+                    :store-prop="storeProp"
+                    :store="store"
+                    @search="searchVal"
+                    @select="onSelectItem"
+                  />
+                  
+                  <!-- Tax Type Indicator -->
+                  <div v-if="itemData.item_tax_type === 'O'" class="mt-1">
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">
+                      <BaseIcon name="InformationCircleIcon" class="h-3 w-3 mr-1" />
+                      {{ $t('tax_types.out_of_scope') }}
+                    </span>
+                  </div>
+                </div>
               </div>
             </td>
             <td class="px-5 py-4 text-right align-top">
@@ -137,7 +147,7 @@
               </div>
             </td>
           </tr>
-          <tr v-if="store[storeProp].tax_per_item === 'YES'">
+          <tr v-if="store[storeProp].tax_per_item === 'YES' && itemData.item_tax_type === 'S'">
             <td class="px-5 py-4 text-left align-top" />
             <td colspan="4" class="px-5 py-4 text-left align-top">
               <BaseContentPlaceholders v-if="loading">
@@ -168,6 +178,15 @@
               />
             </td>
           </tr>
+          <tr v-if="store[storeProp].tax_per_item === 'YES' && itemData.item_tax_type === 'O'">
+            <td class="px-5 py-4 text-left align-top" />
+            <td colspan="4" class="px-5 py-4 text-left align-top">
+              <div class="flex items-center text-sm text-gray-500">
+                <BaseIcon name="InformationCircleIcon" class="h-4 w-4 mr-2" />
+                {{ $t('tax_types.out_of_scope_description') }}
+              </div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </td>
@@ -175,7 +194,7 @@
 </template>
 
 <script setup>
-import { computed, ref, inject } from 'vue'
+import { computed, ref, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Guid from 'guid'
@@ -296,6 +315,11 @@ const showRemoveButton = computed(() => {
 })
 
 const totalSimpleTax = computed(() => {
+  // Only calculate taxes for items with item_tax_type = 'S' (Standard-rated)
+  if (props.itemData.item_tax_type === 'O') {
+    return 0
+  }
+  
   return Math.round(
     sumBy(props.itemData.taxes, function (tax) {
       if (tax.amount) {
@@ -307,6 +331,18 @@ const totalSimpleTax = computed(() => {
 })
 
 const totalTax = computed(() => totalSimpleTax.value)
+
+// Watch for changes in item_tax_type and clear taxes if changed to 'O'
+watch(() => props.itemData.item_tax_type, (newType) => {
+  if (newType === 'O') {
+    props.store.$patch((state) => {
+      state[props.storeProp].items[props.index].taxes = []
+      state[props.storeProp].items[props.index].tax = 0
+      state[props.storeProp].items[props.index].totalTax = 0
+    })
+    syncItemToStore()
+  }
+})
 
 const rules = {
   name: {
@@ -364,6 +400,11 @@ const v$ = useVuelidate(
 // }
 
 function updateTax(data) {
+  // Don't allow taxes for Out of Scope items
+  if (props.itemData.item_tax_type === 'O') {
+    return
+  }
+
   props.store.$patch((state) => {
      state[props.storeProp].items[props.index]['taxes'][data.index] = data.item
   })
@@ -403,6 +444,7 @@ function onSelectItem(itm) {
     state[props.storeProp].items[props.index].price = itm.price
     state[props.storeProp].items[props.index].item_id = itm.id
     state[props.storeProp].items[props.index].description = itm.description
+    state[props.storeProp].items[props.index].item_tax_type = itm.item_tax_type || 'S'
 
     if (itm.unit) {
       state[props.storeProp].items[props.index].unit_name = itm.unit.name

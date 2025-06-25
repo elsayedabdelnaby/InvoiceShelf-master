@@ -149,6 +149,7 @@
         :taxes="taxes"
         :currency="currency"
         :store="store"
+        :store-prop="storeProp"
         @remove="removeTax"
         @update="updateTax"
       />
@@ -234,9 +235,25 @@ const companyStore = useCompanyStore()
 
 watch(
   () => props.store[props.storeProp].items,
-  (val) => {
+  () => {
+    recalculateTaxes()
+  },
+  { deep: true }
+)
+
+watch(
+  () => props.store[props.storeProp].tax_per_item,
+  () => {
+    recalculateTaxes()
+  }
+)
+
+watch(
+  () => props.store[props.storeProp].discount,
+  () => {
     setDiscount()
-  }, { deep: true },
+    recalculateTaxes()
+  }
 )
 
 const totalDiscount = computed({
@@ -261,7 +278,8 @@ const taxes = computed({
 const itemWiseTaxes = computed(() => {
   let taxes = []
   props.store[props.storeProp].items.forEach((item) => {
-    if (item.taxes) {
+    // Only include taxes from items with item_tax_type = 'S' (Standard-rated)
+    if (item.taxes && item.item_tax_type === 'S') {
       item.taxes.forEach((tax) => {
         let found = taxes.find((_tax) => {
           return _tax.tax_type_id === tax.tax_type_id
@@ -290,6 +308,22 @@ const defaultCurrency = computed(() => {
   } else {
     return companyStore.selectedCompanyCurrency
   }
+})
+
+const hasOutOfScopeItems = computed(() => {
+  return props.store[props.storeProp].items.some(item => item.item_tax_type === 'O')
+})
+
+const taxableAmount = computed(() => {
+  return props.store[props.storeProp].items
+    .filter(item => item.item_tax_type === 'S')
+    .reduce((sum, item) => sum + (item.total - item.discount_val), 0)
+})
+
+const nonTaxableAmount = computed(() => {
+  return props.store[props.storeProp].items
+    .filter(item => item.item_tax_type === 'O')
+    .reduce((sum, item) => sum + (item.total - item.discount_val), 0)
 })
 
 function setDiscount() {
@@ -330,9 +364,21 @@ function selectPercentage() {
 
 function onSelectTax(selectedTax) {
   let amount = 0
-  if (selectedTax.calculation_type === 'percentage' && props.store.getSubtotalWithDiscount && selectedTax.percent) {
+  
+  // Calculate taxable amount only from items with item_tax_type = 'S'
+  let taxableSubtotal = 0
+  let totalSubtotal = 0
+  
+  props.store[props.storeProp].items.forEach((item) => {
+    totalSubtotal += item.total - item.discount_val
+    if (item.item_tax_type === 'S') {
+      taxableSubtotal += item.total - item.discount_val
+    }
+  })
+  
+  if (selectedTax.calculation_type === 'percentage' && taxableSubtotal && selectedTax.percent) {
     amount = Math.round(
-      (props.store.getSubtotalWithDiscount * selectedTax.percent) / 100
+      (taxableSubtotal * selectedTax.percent) / 100
     )
   } else if (selectedTax.calculation_type === 'fixed') {
     amount = selectedTax.fixed_amount
@@ -371,4 +417,23 @@ function removeTax(id) {
     state[props.storeProp].taxes.splice(index, 1)
   })
 }
+
+function recalculateTaxes() {
+  // Recalculate taxes only for items with item_tax_type = 'S'
+  let taxableSubtotal = 0
+  props.store[props.storeProp].items.forEach((item) => {
+    if (item.item_tax_type === 'S') {
+      taxableSubtotal += item.total - item.discount_val
+    }
+  })
+  
+  // Update existing taxes with new amounts
+  props.store[props.storeProp].taxes.forEach((tax) => {
+    if (tax.calculation_type === 'percentage' && taxableSubtotal && tax.percent) {
+      tax.amount = Math.round((taxableSubtotal * tax.percent) / 100)
+    }
+    // Fixed amount taxes don't need recalculation
+  })
+}
 </script>
+

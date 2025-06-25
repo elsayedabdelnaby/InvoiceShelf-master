@@ -76,13 +76,27 @@ export const useInvoiceStore = (useWindow = false) => {
         ) {
           return this.getTotalSimpleTax + this.getTotalCompoundTax
         }
-        return _.sumBy(this.newInvoice.items, function (tax) {
-          return tax.tax
+        
+        return _.sumBy(this.newInvoice.items, function (item) {
+          if (item.item_tax_type === 'S') {
+            return item.tax
+          }
+          return 0
         })
       },
 
       getSubtotalWithDiscount() {
         return this.getSubTotal - this.newInvoice.discount_val
+      },
+
+      getTaxableSubtotalWithDiscount() {
+        let taxableSubtotal = 0
+        this.newInvoice.items.forEach((item) => {
+          if (item.item_tax_type === 'S') {
+            taxableSubtotal += item.total - item.discount_val
+          }
+        })
+        return taxableSubtotal
       },
 
       getTotal() {
@@ -150,8 +164,9 @@ export const useInvoiceStore = (useWindow = false) => {
 
         if (this.newInvoice.tax_per_item === 'YES') {
           this.newInvoice.items.forEach((_i) => {
-            if (_i.taxes && !_i.taxes.length)
+            if (_i.item_tax_type === 'S' && _i.taxes && !_i.taxes.length) {
               _i.taxes.push({ ...taxStub, id: Guid.raw() })
+            }
           })
         }
 
@@ -486,6 +501,7 @@ export const useInvoiceStore = (useWindow = false) => {
         this.newInvoice.items.push({
           ...invoiceItemStub,
           id: Guid.raw(),
+          item_tax_type: 'S',
           taxes: [{ ...taxStub, id: Guid.raw() }],
         })
       },

@@ -554,15 +554,17 @@ class Invoice extends Model implements HasMedia
 
         if ($this->tax_per_item === 'YES') {
             foreach ($this->items as $item) {
-                foreach ($item->taxes as $tax) {
-                    $found = $taxes->filter(function ($item) use ($tax) {
-                        return $item->tax_type_id == $tax->tax_type_id;
-                    })->first();
+                if ($item->item_tax_type === 'S') {
+                    foreach ($item->taxes as $tax) {
+                        $found = $taxes->filter(function ($item) use ($tax) {
+                            return $item->tax_type_id == $tax->tax_type_id;
+                        })->first();
 
-                    if ($found) {
-                        $found->amount += $tax->amount;
-                    } else {
-                        $taxes->push($tax);
+                        if ($found) {
+                            $found->amount += $tax->amount;
+                        } else {
+                            $taxes->push($tax);
+                        }
                     }
                 }
             }

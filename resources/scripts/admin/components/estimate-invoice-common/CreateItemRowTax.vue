@@ -5,7 +5,14 @@
         {{ $t('invoices.item.tax') }}
       </label>
 
+      <!-- Show message when item is Out of Scope -->
+      <div v-if="isOutOfScope" class="flex items-center ml-2 text-sm text-gray-500">
+        <BaseIcon name="InformationCircleIcon" class="h-4 w-4 mr-1" />
+        {{ $t('invoices.out_of_scope_tax') }}
+      </div>
+
       <BaseMultiselect
+        v-else
         v-model="selectedTax"
         value-prop="id"
         :options="filteredTypes"
@@ -157,7 +164,17 @@ const filteredTypes = computed(() => {
   })
 })
 
+const isOutOfScope = computed(() => {
+  const currentItem = props.store[props.storeProp].items[props.itemIndex]
+  return currentItem && currentItem.item_tax_type === 'O'
+})
+
 const taxAmount = computed(() => {
+  // Return 0 if item is not Standard-rated (item_tax_type !== 'S')
+  const currentItem = props.store[props.storeProp].items[props.itemIndex]
+  if (currentItem && currentItem.item_tax_type !== 'S') {
+    return 0
+  }
 
   if(localTax.calculation_type === 'fixed') {
     return localTax.fixed_amount
@@ -193,6 +210,14 @@ watch(
   () => {
     updateRowTax()
   },
+)
+
+// Watch for changes in item's tax type
+watch(
+  () => props.store[props.storeProp].items[props.itemIndex]?.item_tax_type,
+  () => {
+    updateRowTax()
+  }
 )
 
 // Set SelectedTax
@@ -251,6 +276,11 @@ function removeTax(index) {
 }
 
 function getTaxAmount() {
+  // Return 0 if item is not Standard-rated (item_tax_type !== 'S')
+  const currentItem = props.store[props.storeProp].items[props.itemIndex]
+  if (currentItem && currentItem.item_tax_type !== 'S') {
+    return 0
+  }
 
   if (localTax.calculation_type === 'fixed') {
     return localTax.fixed_amount

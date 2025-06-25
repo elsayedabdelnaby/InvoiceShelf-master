@@ -42,6 +42,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  storeProp: {
+    type: String,
+    default: '',
+  },
   data: {
     type: String,
     default: '',
@@ -57,16 +61,24 @@ const taxAmount = computed(() => {
     return props.tax.fixed_amount;
   }
   
-  if (props.tax.compound_tax && props.store.getSubtotalWithDiscount) {
+  // Calculate taxable amount only from items with item_tax_type = 'S'
+  let taxableSubtotal = 0
+  props.store[props.storeProp].items.forEach((item) => {
+    if (item.item_tax_type === 'S') {
+      taxableSubtotal += item.total - item.discount_val
+    }
+  })
+  
+  if (props.tax.compound_tax && taxableSubtotal) {
     return Math.round(
-      ((props.store.getSubtotalWithDiscount + props.store.getTotalSimpleTax) *
+      ((taxableSubtotal + props.store.getTotalSimpleTax) *
         props.tax.percent) /
         100
     )
   }
-  if (props.store.getSubtotalWithDiscount && props.tax.percent) {
+  if (taxableSubtotal && props.tax.percent) {
     return Math.round(
-      (props.store.getSubtotalWithDiscount * props.tax.percent) / 100
+      (taxableSubtotal * props.tax.percent) / 100
     )
   }
   return 0
@@ -77,6 +89,10 @@ watchEffect(() => {
     updateTax()
   }
   if (props.store.getTotalSimpleTax) {
+    updateTax()
+  }
+  // Watch for changes in items to recalculate tax when item_tax_type changes
+  if (props.store[props.storeProp]?.items) {
     updateTax()
   }
 })
