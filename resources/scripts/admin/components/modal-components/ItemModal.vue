@@ -54,6 +54,21 @@
               />
             </BaseInputGroup>
 
+            <BaseInputGroup :label="$t('items.item_tax_type')">
+              <BaseSelectInput
+                v-model="itemStore.currentItem.item_tax_type"
+                :options="[
+                  { id: 'S', label: $t('tax_types.standard_rated') }, 
+                  { id: 'O', label: $t('tax_types.out_of_scope') }
+                ]"
+                :allow-empty="false"
+                value-prop="id"
+                label-prop="label"
+                track-by="label"
+                :searchable="false"
+              />
+            </BaseInputGroup>
+
             <BaseInputGroup
               v-if="isTaxPerItemEnabled"
               :label="$t('items.taxes')"

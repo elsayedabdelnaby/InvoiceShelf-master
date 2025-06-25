@@ -65,6 +65,11 @@ class Item extends Model
         return $query->where('items.unit_id', $unit_id);
     }
 
+    public function scopeWhereItemTaxType($query, $item_tax_type)
+    {
+        return $query->where('items.item_tax_type', $item_tax_type);
+    }
+
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
         $query->orderBy($orderByField, $orderBy);
@@ -93,6 +98,10 @@ class Item extends Model
 
         if ($filters->get('item_id')) {
             $query->whereItem($filters->get('item_id'));
+        }
+
+        if ($filters->get('item_tax_type')) {
+            $query->whereItemTaxType($filters->get('item_tax_type'));
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {

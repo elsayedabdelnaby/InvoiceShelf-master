@@ -66,6 +66,22 @@
       <BaseInputGroup class="text-left" :label="$t('items.price')">
         <BaseMoney v-model="filters.price" />
       </BaseInputGroup>
+
+      <BaseInputGroup :label="$t('items.item_tax_type')" class="text-left">
+        <BaseSelectInput
+          v-model="filters.item_tax_type"
+          :options="[
+            { id: '', label: $t('general.all') },
+            { id: 'S', label: $t('tax_types.standard_rated') }, 
+            { id: 'O', label: $t('tax_types.out_of_scope') }
+          ]"
+          :allow-empty="false"
+          value-prop="id"
+          label-prop="label"
+          track-by="label"
+          :searchable="false"
+        />
+      </BaseInputGroup>
     </BaseFilterWrapper>
 
     <BaseEmptyPlaceholder
@@ -172,6 +188,12 @@
           />
         </template>
 
+        <template #cell-item_tax_type="{ row }">
+          <span>
+            {{ row.data.item_tax_type === 'S' ? $t('tax_types.standard_rated') : row.data.item_tax_type === 'O' ? $t('tax_types.out_of_scope') : '-' }}
+          </span>
+        </template>
+
         <template #cell-created_at="{ row }">
           <span>{{ row.data.formatted_created_at }}</span>
         </template>
@@ -217,6 +239,7 @@ const filters = reactive({
   name: '',
   unit_id: '',
   price: '',
+  item_tax_type: '',
 })
 
 const table = ref(null)
@@ -249,6 +272,7 @@ const itemColumns = computed(() => {
     },
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },
+    { key: 'item_tax_type', label: t('items.item_tax_type') },
     { key: 'created_at', label: t('items.added_on') },
 
     {
@@ -280,6 +304,7 @@ function clearFilter() {
   filters.name = ''
   filters.unit_id = ''
   filters.price = ''
+  filters.item_tax_type = ''
 }
 
 function hasAbilities() {
@@ -313,6 +338,7 @@ async function fetchData({ page, filter, sort }) {
     search: filters.name,
     unit_id: filters.unit_id !== null ? filters.unit_id : '',
     price: Math.round(filters.price * 100),
+    item_tax_type: filters.item_tax_type,
     orderByField: sort.fieldName || 'created_at',
     orderBy: sort.order || 'desc',
     page,

@@ -161,7 +161,11 @@
     "name": "الاسم",
     "description": "الوصف",
     "percent": "نسبه مئويه",
-    "compound_tax": "الضريبة المركبة"
+    "compound_tax": "الضريبة المركبة",
+    "out_of_scope": "غير خاضع للضريبة المضافة (0%)",
+    "standard_rated": "شامل الضريبة المضافة (15%)",
+    "out_of_scope_description": "غير خاضع للضريبة المضافة / صفر ضريبة / لا تنطبق الضريبة المضافة",
+    "standard_rated_description": "شامل الضريبة المضافة - 15%"
   },
   "global_search": {
     "search": "بحث...",
@@ -277,6 +281,7 @@
     "list_of_items": "هذا القسم سوف يحتوي على قائمة الأصناف.",
     "select_a_unit": "اختر الوحدة",
     "taxes": "الضرائب",
+    "item_tax_type": "نوع ضريبة الصنف",
     "item_attached_message": "لا يمكن حذف الصنف قيد الاستخدام",
     "confirm_delete": "لن تتمكن من استرجاع هذا الصنف | لن تتمكن من استرجاع هذه الأصناف",
     "created_message": "تم إنشاء الصنف بنجاح",

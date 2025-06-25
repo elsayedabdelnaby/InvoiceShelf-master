@@ -167,7 +167,11 @@
     "compound_tax": "Compound Tax",
     "percentage": "Percentage",
     "fixed_amount": "Fixed Amount",
-    "tax_type": "Tax Type"
+    "tax_type": "Tax Type",
+    "out_of_scope": "Out of Scope (VAT 0%)",
+    "standard_rated": "Standard-rated (VAT 15%)",
+    "out_of_scope_description": "Out of Scope / Zero-rated / VAT Not Applicable",
+    "standard_rated_description": "Standard-rated (VAT Inclusive) - 15%"
   },
   "global_search": {
     "search": "Search...",
@@ -283,6 +287,7 @@
     "list_of_items": "This section will contain the list of items.",
     "select_a_unit": "select unit",
     "taxes": "Taxes",
+    "item_tax_type": "Item Tax Type",
     "item_attached_message": "Cannot delete an item which is already in use",
     "confirm_delete": "You will not be able to recover this Item | You will not be able to recover these Items",
     "created_message": "Item created successfully",
