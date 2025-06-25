@@ -20,6 +20,13 @@ class ToggleInvoiceArchiveController extends Controller
     {
         $this->authorize('edit-invoice', $invoice);
 
+        if ($invoice->paid_status !== Invoice::STATUS_UNPAID) {
+            return response()->json([
+                'message' => 'Only unpaid invoices can be archived.',
+                'error' => 'INVALID_INVOICE_STATUS'
+            ], 422);
+        }
+
         if ($invoice->is_archived) {
             $invoice->is_archived = false;
             $invoice->status = $invoice->getPreviousStatus();

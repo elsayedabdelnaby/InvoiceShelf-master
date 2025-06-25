@@ -101,7 +101,7 @@
 
     <!-- Toggle Archive Invoice  -->
     <BaseDropdownItem
-      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE) && row.paid_status === 'UNPAID'"
       @click="toggleArchive(row)"
     >
       <BaseIcon

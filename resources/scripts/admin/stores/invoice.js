@@ -373,7 +373,14 @@ export const useInvoiceStore = (useWindow = false) => {
               resolve(response)
             })
             .catch((err) => {
-              handleError(err)
+              if (err.response && err.response.data && err.response.data.error === 'INVALID_INVOICE_STATUS') {
+                notificationStore.showNotification({
+                  type: 'error',
+                  message: err.response.data.message || global.t('invoices.only_unpaid_can_be_archived'),
+                })
+              } else {
+                handleError(err)
+              }
               reject(err)
             })
         })
