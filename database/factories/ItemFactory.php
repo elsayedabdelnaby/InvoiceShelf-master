@@ -31,6 +31,7 @@ class ItemFactory extends Factory
             'creator_id' => User::where('role', 'super admin')->first()->company_id,
             'currency_id' => Currency::find(1)->id,
             'tax_per_item' => $this->faker->randomElement([true, false]),
+            'item_tax_type' => $this->faker->randomElement(['O', 'S']),
         ];
     }
 }

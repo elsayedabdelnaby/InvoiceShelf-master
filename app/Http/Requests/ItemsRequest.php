@@ -32,6 +32,10 @@ class ItemsRequest extends FormRequest
             'description' => [
                 'nullable',
             ],
+            'item_tax_type' => [
+                'nullable',
+                'in:O,S',
+            ],
         ];
     }
 }

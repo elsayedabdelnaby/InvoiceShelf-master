@@ -26,6 +26,10 @@ class Item extends Model
         ];
     }
 
+    // Item Tax Type Constants
+    public const TAX_TYPE_OUT_OF_SCOPE = 'O'; // Out of Scope / Zero-rated / VAT Not Applicable
+    public const TAX_TYPE_STANDARD = 'S'; // Standard-rated (VAT Inclusive) - 15%
+
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class, 'unit_id');
