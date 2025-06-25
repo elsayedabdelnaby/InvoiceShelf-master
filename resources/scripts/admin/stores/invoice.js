@@ -348,6 +348,37 @@ export const useInvoiceStore = (useWindow = false) => {
         })
       },
 
+      toggleArchive(data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`/api/v1/invoices/${data.id}/toggle-archive`)
+            .then((response) => {
+              let pos = this.invoices.findIndex(
+                (invoices) => invoices.id === data.id
+              )
+
+              if (this.invoices[pos]) {
+                this.invoices[pos].is_archived = response.data.data.is_archived
+                this.invoices[pos].status = response.data.data.status
+              }
+
+              const message = response.data.data.is_archived 
+                ? global.t('invoices.archived_successfully')
+                : global.t('invoices.unarchived_successfully')
+
+              notificationStore.showNotification({
+                type: 'success',
+                message: message,
+              })
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       getNextNumber(params, setState = false) {
         return new Promise((resolve, reject) => {
           axios

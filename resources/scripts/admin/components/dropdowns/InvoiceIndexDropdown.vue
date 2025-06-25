@@ -99,6 +99,18 @@
       {{ $t('invoices.clone_invoice') }}
     </BaseDropdownItem>
 
+    <!-- Toggle Archive Invoice  -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      @click="toggleArchive(row)"
+    >
+      <BaseIcon
+        :name="row.is_archived ? 'ArrowUturnLeftIcon' : 'ArchiveBoxIcon'"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ row.is_archived ? $t('general.unarchive') : $t('general.archive') }}
+    </BaseDropdownItem>
+
     <!--  Delete Invoice  -->
     <BaseDropdownItem
       v-if="userStore.hasAbilities(abilities.DELETE_INVOICE)"
@@ -257,5 +269,29 @@ function copyPdfUrl() {
     type: 'success',
     message: t('general.copied_pdf_url_clipboard'),
   })
+}
+
+async function toggleArchive(row) {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: row.is_archived 
+        ? t('invoices.confirm_unarchive')
+        : t('invoices.confirm_archive'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'primary',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res) => {
+      if (res) {
+        await invoiceStore.toggleArchive({ id: row.id }).then((res) => {
+          if (res.data.success) {
+            props.table && props.table.refresh()
+          }
+        })
+      }
+    })
 }
 </script>

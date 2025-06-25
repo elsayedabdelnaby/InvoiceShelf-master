@@ -135,6 +135,7 @@
           <BaseTab :title="$t('general.draft')" filter="DRAFT" />
           <BaseTab :title="$t('general.sent')" filter="SENT" />
           <BaseTab :title="$t('general.due')" filter="DUE" />
+          <BaseTab :title="$t('general.archived')" filter="ARCHIVED" />
         </BaseTabGroup>
 
         <BaseDropdown
@@ -300,7 +301,8 @@ const status = ref([
       {label: t('general.due'), value: 'DUE'},
       {label: t('general.sent'), value: 'SENT'},
       {label: t('invoices.viewed'), value: 'VIEWED'},
-      {label: t('invoices.completed'), value: 'COMPLETED'}
+      {label: t('invoices.completed'), value: 'COMPLETED'},
+      {label: t('general.archived'), value: 'ARCHIVED'}
     ],
   },
   {
@@ -457,6 +459,10 @@ function setStatusFilter(val) {
       filters.status = 'DUE'
       break
 
+    case t('general.archived'):
+      filters.status = 'ARCHIVED'
+      break
+
     default:
       filters.status = ''
       break
@@ -550,6 +556,10 @@ function setActiveTab(val) {
 
     case 'VIEWED':
       activeTab.value = t('invoices.viewed')
+      break
+
+    case 'ARCHIVED':
+      activeTab.value = t('general.archived')
       break
 
     default:
