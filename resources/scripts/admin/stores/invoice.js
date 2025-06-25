@@ -163,9 +163,21 @@ export const useInvoiceStore = (useWindow = false) => {
         Object.assign(this.newInvoice, invoice)
 
         if (this.newInvoice.tax_per_item === 'YES') {
-          this.newInvoice.items.forEach((_i) => {
-            if (_i.item_tax_type === 'S' && _i.taxes && !_i.taxes.length) {
-              _i.taxes.push({ ...taxStub, id: Guid.raw() })
+          this.newInvoice.items.forEach((_i, index) => {
+            // Set default item_tax_type if not present (for existing invoices)
+            if (!_i.item_tax_type) {
+              this.newInvoice.items[index].item_tax_type = 'S'
+            }
+            
+            // Clear taxes for Out of Scope items
+            if (_i.item_tax_type === 'O') {
+              this.newInvoice.items[index].taxes = []
+              this.newInvoice.items[index].tax = 0
+              this.newInvoice.items[index].totalTax = 0
+            }
+            // Add tax stub for Standard-rated items that don't have taxes
+            else if (_i.item_tax_type === 'S' && _i.taxes && !_i.taxes.length) {
+              this.newInvoice.items[index].taxes.push({ ...taxStub, id: Guid.raw() })
             }
           })
         }

@@ -256,6 +256,14 @@ watch(
   }
 )
 
+// Watch for changes in items array to recalculate taxes when data is loaded (for edit mode)
+watch(
+  () => props.store[props.storeProp].items.length,
+  () => {
+    recalculateTaxes()
+  }
+)
+
 const totalDiscount = computed({
   get: () => {
     return props.store[props.storeProp].discount
