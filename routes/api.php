@@ -47,6 +47,7 @@ use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoiceTemplatesController;
 use App\Http\Controllers\V1\Admin\Invoice\SendInvoiceController;
 use App\Http\Controllers\V1\Admin\Invoice\SendInvoicePreviewController;
+use App\Http\Controllers\V1\Admin\Invoice\ToggleInvoiceArchiveController;
 use App\Http\Controllers\V1\Admin\Item\ItemsController;
 use App\Http\Controllers\V1\Admin\Item\UnitsController;
 use App\Http\Controllers\V1\Admin\Mobile\AuthController;
@@ -268,6 +269,8 @@ Route::prefix('/v1')->group(function () {
             Route::post('/invoices/{invoice}/clone', CloneInvoiceController::class);
 
             Route::post('/invoices/{invoice}/status', ChangeInvoiceStatusController::class);
+
+            Route::post('/invoices/{invoice}/toggle-archive', ToggleInvoiceArchiveController::class);
 
             Route::post('/invoices/delete', [InvoicesController::class, 'delete']);
 

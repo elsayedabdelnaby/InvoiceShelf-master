@@ -825,6 +825,7 @@ namespace App\Models{
  * @property int $due_amount
  * @property int $sent
  * @property int $viewed
+ * @property bool $is_archived
  * @property string|null $unique_hash
  * @property int|null $user_id
  * @property int|null $company_id
