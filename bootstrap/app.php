@@ -67,7 +67,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Illuminate\Auth\Middleware\Authorize::class,
         ]);
-
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

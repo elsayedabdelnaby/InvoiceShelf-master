@@ -23,7 +23,10 @@ use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
 use App\Space\InstallUtils;
 use Gate;
+use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
 use Silber\Bouncer\Database\Role;
@@ -67,6 +70,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->bootAuth();
         $this->bootBroadcast();
+        $this->configureRateLimiting();
 
         // In demo mode, prevent all outgoing emails and notifications
         if (config('app.env') === 'demo') {
@@ -163,5 +167,68 @@ class AppServiceProvider extends ServiceProvider
     public function bootBroadcast()
     {
         Broadcast::routes(['middleware' => 'api.auth']);
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     */
+    protected function configureRateLimiting(): void
+    {
+        // Rate limiter for invoice retrieval APIs (GET requests)
+        RateLimiter::for('invoice-retrieval', function (Request $request) {
+            $user = $request->user();
+            
+            // Super admins get unlimited access
+            if ($user && $user->isOwner()) {
+                return Limit::none();
+            }
+            
+            // Admin users get higher limits
+            if ($user && $user->hasRole('admin')) {
+                return Limit::perMinute(120)->by($user->id);
+            }
+            
+            // Regular users get standard limits
+            if ($user) {
+                return Limit::perMinute(60)->by($user->id);
+            }
+            
+            // Guest users get lower limits
+            return Limit::perMinute(30)->by($request->ip());
+        });
+        
+        // Rate limiter for invoice actions (POST, PUT, DELETE requests)
+        RateLimiter::for('invoice-actions', function (Request $request) {
+            $user = $request->user();
+            
+            // Super admins get unlimited access
+            if ($user && $user->isOwner()) {
+                return Limit::none();
+            }
+            
+            // Admin users get higher limits
+            if ($user && $user->hasRole('admin')) {
+                return Limit::perMinute(60)->by($user->id);
+            }
+            
+            // Regular users get standard limits
+            if ($user) {
+                return Limit::perMinute(30)->by($user->id);
+            }
+            
+            // No guest access for actions
+            return Limit::perMinute(0);
+        });
+        
+        // Rate limiter for customer invoice access
+        RateLimiter::for('customer-invoices', function (Request $request) {
+            $customer = $request->user('customer');
+            
+            if ($customer) {
+                return Limit::perMinute(30)->by($customer->id);
+            }
+            
+            return Limit::perMinute(10)->by($request->ip());
+        });
     }
 }

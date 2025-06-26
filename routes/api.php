@@ -265,23 +265,29 @@ Route::prefix('/v1')->group(function () {
             // Invoices
             // -------------------------------------------------
 
-            Route::get('/invoices/export/csv', ExportInvoicesCsvController::class);
+            Route::get('/invoices/export/csv', ExportInvoicesCsvController::class)->middleware('throttle:invoice-retrieval');
 
-            Route::get('/invoices/{invoice}/send/preview', SendInvoicePreviewController::class);
+            Route::get('/invoices/{invoice}/send/preview', SendInvoicePreviewController::class)->middleware('throttle:invoice-retrieval');
 
-            Route::post('/invoices/{invoice}/send', SendInvoiceController::class);
+            Route::post('/invoices/{invoice}/send', SendInvoiceController::class)->middleware('throttle:invoice-actions');
 
-            Route::post('/invoices/{invoice}/clone', CloneInvoiceController::class);
+            Route::post('/invoices/{invoice}/clone', CloneInvoiceController::class)->middleware('throttle:invoice-actions');
 
-            Route::post('/invoices/{invoice}/status', ChangeInvoiceStatusController::class);
+            Route::post('/invoices/{invoice}/status', ChangeInvoiceStatusController::class)->middleware('throttle:invoice-actions');
 
-            Route::post('/invoices/{invoice}/toggle-archive', ToggleInvoiceArchiveController::class);
+            Route::post('/invoices/{invoice}/toggle-archive', ToggleInvoiceArchiveController::class)->middleware('throttle:invoice-actions');
 
-            Route::post('/invoices/delete', [InvoicesController::class, 'delete']);
+            Route::post('/invoices/delete', [InvoicesController::class, 'delete'])->middleware('throttle:invoice-actions');
 
-            Route::get('/invoices/templates', InvoiceTemplatesController::class);
+            Route::get('/invoices/templates', InvoiceTemplatesController::class)->middleware('throttle:invoice-retrieval');
 
-            Route::apiResource('invoices', InvoicesController::class);
+            Route::apiResource('invoices', InvoicesController::class)->middleware([
+                'index' => 'throttle:invoice-retrieval',
+                'show' => 'throttle:invoice-retrieval',
+                'store' => 'throttle:invoice-actions',
+                'update' => 'throttle:invoice-actions',
+                'destroy' => 'throttle:invoice-actions',
+            ]);
 
             // Recurring Invoice
             // -------------------------------------------------
@@ -520,9 +526,9 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/dashboard', CustomerDashboardController::class);
 
-            Route::get('invoices', [CustomerInvoicesController::class, 'index']);
+            Route::get('invoices', [CustomerInvoicesController::class, 'index'])->middleware('throttle:customer-invoices');
 
-            Route::get('invoices/{id}', [CustomerInvoicesController::class, 'show']);
+            Route::get('invoices/{id}', [CustomerInvoicesController::class, 'show'])->middleware('throttle:customer-invoices');
 
             Route::post('/estimate/{estimate}/status', CustomerAcceptEstimateController::class);
 
