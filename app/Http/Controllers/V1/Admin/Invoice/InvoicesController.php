@@ -8,10 +8,18 @@ use App\Http\Requests\DeleteInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
 use App\Models\Invoice;
+use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 
 class InvoicesController extends Controller
 {
+    protected $invoiceService;
+
+    public function __construct(InvoiceService $invoiceService)
+    {
+        $this->invoiceService = $invoiceService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,7 +53,7 @@ class InvoicesController extends Controller
     {
         $this->authorize('create', Invoice::class);
 
-        $invoice = Invoice::createInvoice($request);
+        $invoice = $this->invoiceService->createInvoice($request);
 
         if ($request->has('invoiceSend')) {
             $invoice->send($request->subject, $request->body);

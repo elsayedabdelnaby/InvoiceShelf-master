@@ -319,55 +319,6 @@ class Invoice extends Model implements HasMedia
         return $query->paginate($limit);
     }
 
-    public static function createInvoice($request)
-    {
-        $data = $request->getInvoicePayload();
-
-        if ($request->has('invoiceSend')) {
-            $data['status'] = Invoice::STATUS_SENT;
-        }
-
-        $invoice = Invoice::create($data);
-
-        $serial = (new SerialNumberFormatter)
-            ->setModel($invoice)
-            ->setCompany($invoice->company_id)
-            ->setCustomer($invoice->customer_id)
-            ->setNextNumbers();
-
-        $invoice->sequence_number = $serial->nextSequenceNumber;
-        $invoice->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $invoice->unique_hash = Hashids::connection(Invoice::class)->encode($invoice->id);
-        $invoice->save();
-
-        self::createItems($invoice, $request->items);
-
-        $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
-
-        if ((string) $data['currency_id'] !== $company_currency) {
-            ExchangeRateLog::addExchangeRateLog($invoice);
-        }
-
-        if ($request->has('taxes') && (! empty($request->taxes))) {
-            self::createTaxes($invoice, $request->taxes);
-        }
-
-        if ($request->customFields) {
-            $invoice->addCustomFields($request->customFields);
-        }
-
-        $invoice = Invoice::with([
-            'items',
-            'items.fields',
-            'items.fields.customField',
-            'customer',
-            'taxes',
-        ])
-            ->find($invoice->id);
-
-        return $invoice;
-    }
-
     public function updateInvoice($request)
     {
         $serial = (new SerialNumberFormatter)

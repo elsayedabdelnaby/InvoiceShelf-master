@@ -81,6 +81,11 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         BouncerModels::scope(new DefaultScope);
+
+        // Register services
+        $this->app->singleton(\App\Services\InvoiceService::class, function ($app) {
+            return new \App\Services\InvoiceService();
+        });
     }
 
     public function addMenus()
