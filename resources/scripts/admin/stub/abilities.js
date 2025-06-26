@@ -76,4 +76,8 @@ export default {
   // settings
   MANAGE_NOTE: 'manage-all-notes',
   VIEW_NOTE: 'view-all-notes',
+
+  // Logs
+  VIEW_AUDIT_LOGS: 'view-audit-logs',
+  VIEW_EMAIL_LOGS: 'view-email-logs',
 }

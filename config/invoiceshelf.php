@@ -2,10 +2,12 @@
 
 use App\Models\Customer;
 use App\Models\CustomField;
+use App\Models\EmailLog;
 use App\Models\Estimate;
 use App\Models\ExchangeRateProvider;
 use App\Models\Expense;
 use App\Models\Invoice;
+use App\Models\InvoicePaidAuditLog;
 use App\Models\Item;
 use App\Models\Note;
 use App\Models\Payment;
@@ -401,6 +403,26 @@ return [
             'owner_only' => false,
             'ability' => 'view-financial-reports',
             'model' => '',
+        ],
+        [
+            'title' => 'navigation.audit_logs',
+            'group' => 3,
+            'link' => '/admin/logs/audit',
+            'icon' => 'ClipboardDocumentListIcon',
+            'name' => 'Audit Logs',
+            'owner_only' => false,
+            'ability' => 'view-audit-logs',
+            'model' => InvoicePaidAuditLog::class,
+        ],
+        [
+            'title' => 'navigation.email_logs',
+            'group' => 3,
+            'link' => '/admin/logs/email',
+            'icon' => 'EnvelopeIcon',
+            'name' => 'Email Logs',
+            'owner_only' => false,
+            'ability' => 'view-email-logs',
+            'model' => EmailLog::class,
         ],
         [
             'title' => 'navigation.settings',

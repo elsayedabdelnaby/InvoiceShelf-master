@@ -9,6 +9,8 @@
     "estimates": "Presupuestos",
     "payments": "Pagos",
     "reports": "Informes",
+    "audit_logs": "Registros de Auditoría",
+    "email_logs": "Registros de Correo",
     "settings": "Ajustes",
     "logout": "Cerrar sesión",
     "users": "Usuarios",
@@ -120,7 +122,12 @@
       "the_list_is_empty": "La lista está vacía",
       "no_results_found": "No se encontraron resultados"
     },
-    "copy_to_clipboard": "Copiar al portapapeles"
+    "copy_to_clipboard": "Copiar al portapapeles",
+    "user": "Usuario",
+    "created_at": "Creado En",
+    "show_filters": "Mostrar Filtros",
+    "hide_filters": "Ocultar Filtros",
+    "email": "Correo Electrónico"
   },
   "dashboard": {
     "select_year": "Seleccionar año",
@@ -1649,5 +1656,16 @@
   "mail_view_payment": "Ver pago",
   "notification_view_estimate": "[Notification] Presupuesto visto",
   "notification_view_invoice": "[Notification] Factura vista",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Ha recibido una nueva factura de <b>{COMPANY_NAME}</b>.</br> Por favor descárguela usando el siguiente botón:"
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Ha recibido una nueva factura de <b>{COMPANY_NAME}</b>.</br> Por favor descárguela usando el siguiente botón:",
+  "logs": {
+    "audit_logs": "Registros de Auditoría",
+    "email_logs": "Registros de Correo",
+    "status_change": "Cambio de Estado",
+    "document": "Documento",
+    "document_type": "Tipo de Documento",
+    "user": "Usuario",
+    "email": "Correo Electrónico",
+    "invoice": "Factura",
+    "subject": "Asunto"
+  }
 }

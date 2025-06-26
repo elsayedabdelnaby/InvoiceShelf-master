@@ -24,9 +24,14 @@ router.beforeEach((to, from, next) => {
   const { isAppLoaded } = globalStore
 
   if (ability && isAppLoaded && to.meta.requiresAuth) {
-    if (userStore.hasAbilities(ability)) {
+    // Allow super admin users to access audit and email logs
+    if (userStore.currentUser.is_owner && (ability === 'view-audit-logs' || ability === 'view-email-logs')) {
       next()
-    } else next({ name: 'account.settings' })
+    } else if (userStore.hasAbilities(ability)) {
+      next()
+    } else {
+      next({ name: 'account.settings' })
+    }
   } else if (to.meta.isOwner && isAppLoaded) {
     if (userStore.currentUser.is_owner) {
       next()

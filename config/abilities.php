@@ -2,10 +2,12 @@
 
 use App\Models\Customer;
 use App\Models\CustomField;
+use App\Models\EmailLog;
 use App\Models\Estimate;
 use App\Models\ExchangeRateProvider;
 use App\Models\Expense;
 use App\Models\Invoice;
+use App\Models\InvoicePaidAuditLog;
 use App\Models\Item;
 use App\Models\Note;
 use App\Models\Payment;
@@ -415,6 +417,20 @@ return [
             'depends_on' => [
                 'view-all-notes',
             ],
+        ],
+
+        // Audit Logs
+        [
+            'name' => 'view audit logs',
+            'ability' => 'view-audit-logs',
+            'model' => InvoicePaidAuditLog::class,
+        ],
+
+        // Email Logs
+        [
+            'name' => 'view email logs',
+            'ability' => 'view-email-logs',
+            'model' => EmailLog::class,
         ],
     ],
 ];

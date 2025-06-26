@@ -104,6 +104,10 @@ const RecurringInvoiceView = () =>
 const ReportsIndex = () =>
   import('@/scripts/admin/views/reports/layout/Index.vue')
 
+// Logs
+const AuditLogs = () => import('@/scripts/admin/views/logs/AuditLogs.vue')
+const EmailLogs = () => import('@/scripts/admin/views/logs/EmailLogs.vue')
+
 // Installation
 const Installation = () =>
   import('@/scripts/admin/views/installation/Installation.vue')
@@ -494,6 +498,20 @@ export default [
         path: 'reports',
         meta: { ability: abilities.VIEW_FINANCIAL_REPORT },
         component: ReportsIndex,
+      },
+
+      // Logs
+      {
+        path: 'logs/audit',
+        name: 'logs.audit',
+        meta: { ability: abilities.VIEW_AUDIT_LOGS },
+        component: AuditLogs,
+      },
+      {
+        path: 'logs/email',
+        name: 'logs.email',
+        meta: { ability: abilities.VIEW_EMAIL_LOGS },
+        component: EmailLogs,
       },
     ],
   },

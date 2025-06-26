@@ -9,6 +9,8 @@
     "estimates": "Estimates",
     "payments": "Payments",
     "reports": "Reports",
+    "audit_logs": "Audit Logs",
+    "email_logs": "Email Logs",
     "settings": "Settings",
     "logout": "Logout",
     "users": "Users",
@@ -123,7 +125,12 @@
       "the_list_is_empty": "The list is empty",
       "no_results_found": "No results found"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Copy to Clipboard",
+    "user": "User",
+    "created_at": "Created At",
+    "show_filters": "Show Filters",
+    "hide_filters": "Hide Filters",
+    "email": "Email"
   },
   "dashboard": {
     "select_year": "Select year",
@@ -1671,5 +1678,16 @@
   "mail_view_payment": "View Payment",
   "notification_view_estimate": "[Notification] Estimate viewed",
   "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:",
+  "logs": {
+    "audit_logs": "Audit Logs",
+    "email_logs": "Email Logs",
+    "status_change": "Status Change",
+    "document": "Document",
+    "document_type": "Document Type",
+    "user": "User",
+    "email": "Email",
+    "invoice": "Invoice",
+    "subject": "Subject"
+  }
 }

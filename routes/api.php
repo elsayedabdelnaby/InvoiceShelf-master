@@ -51,6 +51,8 @@ use App\Http\Controllers\V1\Admin\Invoice\SendInvoicePreviewController;
 use App\Http\Controllers\V1\Admin\Invoice\ToggleInvoiceArchiveController;
 use App\Http\Controllers\V1\Admin\Item\ItemsController;
 use App\Http\Controllers\V1\Admin\Item\UnitsController;
+use App\Http\Controllers\V1\Admin\Log\AuditLogsController;
+use App\Http\Controllers\V1\Admin\Log\EmailLogsController;
 use App\Http\Controllers\V1\Admin\Mobile\AuthController;
 use App\Http\Controllers\V1\Admin\Modules\ApiTokenController;
 use App\Http\Controllers\V1\Admin\Modules\CompleteModuleInstallationController;
@@ -426,6 +428,13 @@ Route::prefix('/v1')->group(function () {
             Route::get('abilities', AbilitiesController::class);
 
             Route::apiResource('roles', RolesController::class);
+
+            // Logs
+            // ----------------------------------
+
+            Route::get('audit-logs', [AuditLogsController::class, 'index']);
+
+            Route::get('email-logs', [EmailLogsController::class, 'index']);
         });
 
         // Self Update
